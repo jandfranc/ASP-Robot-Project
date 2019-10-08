@@ -16,11 +16,22 @@ def splitAnswerSets(set_to_split):
     split_string = [x.split(', ') for x in split_string]
     return split_string
 
-def removeNotTrue(answerset):
-    
+def removeNotRelevant(answerset):
+#removes all values not part of the plan - must be a list of answer sets inputted
+    for i_sets in range(0,len(answerset)):
+        answerset[i_sets] = [x for x in answerset[i_sets] if x[0] != '-']
+        answerset[i_sets] = [x for x in answerset[i_sets] if x[0:6] == 'occurs']
+    return answerset
 
+def sortOutAnswerSet(file):
+    returned_val = getAnswerSets(file)
+    returned_val = splitAnswerSets(returned_val)
+    returned_val = removeNotRelevant(returned_val)
+    return returned_val
 
 if __name__ == "__main__":
     #get_answer_set("s_ancestors.sp")
-    a = splitAnswerSets(getAnswerSets("s_bwplan.sp"))
-    print(a[0])
+    #a = splitAnswerSets(getAnswerSets("s_bwplan.sp"))
+    #a = removeNotTrue(a)
+    a = sortOutAnswerSet('s_bwplan.sp')
+    print(a[1])
