@@ -1,6 +1,6 @@
 import subprocess
 
-def getAnswerSets(file):
+def solveAnswerSets(file):
 #Takes ASP file as input and returns its answer set
     cmd = 'java -jar sparc.jar {} -A'.format(file)
     answer_set = subprocess.check_output(cmd)
@@ -23,8 +23,8 @@ def removeNotRelevant(answerset):
         answerset[i_sets] = [x for x in answerset[i_sets] if x[0:6] == 'occurs']
     return answerset
 
-def sortOutAnswerSet(file):
-    returned_val = getAnswerSets(file)
+def getAnswerSet(file):
+    returned_val = solveAnswerSets(file)
     returned_val = splitAnswerSets(returned_val)
     returned_val = removeNotRelevant(returned_val)
     return returned_val
@@ -33,5 +33,5 @@ if __name__ == "__main__":
     #get_answer_set("s_ancestors.sp")
     #a = splitAnswerSets(getAnswerSets("s_bwplan.sp"))
     #a = removeNotTrue(a)
-    a = sortOutAnswerSet('s_bwplan.sp')
+    a = getAnswerSet('s_bwplan.sp')
     print(a[1])
