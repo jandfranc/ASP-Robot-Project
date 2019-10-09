@@ -24,6 +24,7 @@ def removeNotRelevant(answerset):
     return answerset
 
 def getAnswerSet(file):
+#performs all steps in getting instructions
     returned_val = solveAnswerSets(file)
     returned_val = splitAnswerSets(returned_val)
     returned_val = removeNotRelevant(returned_val)
