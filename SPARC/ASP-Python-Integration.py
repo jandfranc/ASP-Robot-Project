@@ -2,7 +2,7 @@ import subprocess
 
 def solveAnswerSets(file):
 #Takes ASP file as input and returns its answer set
-    cmd = 'java -jar sparc.jar {} -A'.format(file)
+    cmd = 'java -jar sparc.jar {} -A -n 1'.format(file)
     answer_set = subprocess.check_output(cmd)
     answer_set = answer_set.decode('utf-8')
     return answer_set
@@ -34,5 +34,5 @@ if __name__ == "__main__":
     #get_answer_set("s_ancestors.sp")
     #a = splitAnswerSets(getAnswerSets("s_bwplan.sp"))
     #a = removeNotTrue(a)
-    a = getAnswerSet('s_bwplan.sp')
-    print(a[1])
+    a = getAnswerSet('testplan.sp')
+    print(a)
