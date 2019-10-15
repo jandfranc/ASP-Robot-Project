@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 def velocity_motion_model(pose, previous_pose,control, time, prob):
     #poses are vectors containing x, y and angular values, respectively
@@ -41,3 +42,37 @@ def prob_norm(argument,variance):
 
 def prob_triangle(argument, variance):
     return max(0, (1/(sqrt(6)*np.sqrt(variance)) - abs(argument)/6*variance )
+
+
+def sample_motion_model_velocity(previous_pose,control,time, time, sample):
+
+    x, y, theta = previous_pose
+    trans_vel, rot_vel = control
+
+    a_1 = 1
+    a_2 = 1
+    a_3 = 1
+    a_4 = 1
+    a_5 = 1
+    a_6 = 1
+
+    trans_error_prob = trans_vel + sample(a_1*trans_vel*trans_vel + a_2*rot_vel*rot_vel)
+    rot_error_prob = rot_vel + sample(a_3*trans_vel*trans_vel + a_4*rot_vel*rot_vel)
+    rand_term_prob = sample(a_5*trans_vel*trans_vel + a_6*rot_vel*rot_vel)
+
+    x_new = x-(trans_error_prob/rot_error_prob)*sin(theta)+(trans_error_prob/rot_error_prob)*sin(theta+rot_error_prob*time)
+    y_new = y+(trans_error_prob/rot_error_prob)*cos(theta)-(trans_error_prob/rot_error_prob)*cos(theta+rot_error_prob*time)
+    theta_new = theta+rot_error_prob*time + rand_term_prob*time)
+
+    return x_new, y_new, theta_new
+
+def sample_norm(variance):
+    sqrt_variance = sqrt(variance)
+    sum_list = []
+    for i in range(0,12):
+        sum_list.append(random.uniform(-sqrt_variance, sqrt_variance))
+    return 0.5 * sum(sum_list)
+
+def sample_triangle(variance):
+    sqrt_variance = sqrt(variance)
+    return (sqrt(6)/2) * (random.uniform(-sqrt_variance, sqrt_variance) + random.uniform(-sqrt_variance, sqrt_variance))
