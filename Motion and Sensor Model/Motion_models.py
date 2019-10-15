@@ -39,4 +39,5 @@ def velocity_motion_model(pose, previous_pose,control, time, prob):
 def prob_norm(argument,variance):
     return 1/np.sqrt(2*np.pi*variance) * exp(-0.5*argument*argument/variance)
 
-def prob_triangle
+def prob_triangle(argument, variance):
+    return max(0, (1/(sqrt(6)*np.sqrt(variance)) - abs(argument)/6*variance )
