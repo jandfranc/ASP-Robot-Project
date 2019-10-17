@@ -22,8 +22,8 @@ def velocity_motion_model(pose, previous_pose,control, time, prob):
     error_free_control_denominator = (x-x_new)*np.cos(rot_vel)-(y-y_new)*np.sin(rot_vel)
     error_free_control = 0.5*error_free_control_numerator/error_free_control_denominator
 
-    x_center = ((x+x_new)/2) + error_free_control*(y-y_new)
-    y_center = ((y+y_new)/2) + error_free_control*(x_new-x)
+    x_center = ((x+x_new)/2) + error_free_control(y-y_new)
+    y_center = ((y+y_new)/2) + error_free_control(x_new-x)
     r_center = np.sqrt((x-x_center)*(x-x_center)+(y-y_center)*(y-y_center))
 
     angle_change = np.arctan2(y_new-y_center, x_new - x_center) - np.arctan2(y-y_center, x -x_center)
@@ -46,11 +46,7 @@ def prob_triangle(argument, variance):
 
 
 def sample_motion_model_velocity(previous_pose,control,time, sample):
-    #poses are vectors containing x, y and angular values, respectively
-    #control is a vector containing translational velocity and rotational velocity, respectively
-    #time is time taken for transition
-    #velocity model used for probabilistic motion planning
-    #sample is the probability function to use
+
     x, y, theta = previous_pose
     trans_vel, rot_vel = control
 
