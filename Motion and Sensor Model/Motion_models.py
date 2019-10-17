@@ -95,14 +95,14 @@ def odom_motion_model(pose,previous_pose,control,prob):
 
     x, y, theta = previous_pose
     x_new, y_new, theta_new = pose
-    x_int, y_int, theta_int =  control
+    x_int_new, y_int_new, theta_int_new, x_int, y_int, theta_int =  control
 
-    delta_trans = sqrt((x_int-x)*(x_int-x)+(y_int-y)*(y_int-y))
-    delta_rotone = arctan2(y_int-y,x_int-x)-theta_int
-    delta_rottwo = theta_int-theta-delta_rotone
+    delta_trans = sqrt((x_int_new-x_int)*(x_int_new-x_int)+(y_int_new-y_int)*(y_int_new-y_int))
+    delta_rotone = np.arctan2(y_int_new-y_int,x_int_new-x_int)-theta_int_new
+    delta_rottwo = theta_int_new-theta_int-delta_rotone
 
     delta_hat_trans = sqrt((x-x_new)*(x-x_new)+(y-y_new)*(y-y_new))
-    delta_hat_rotone = arctan2(y_new-y,x_mew-x)-theta_int
+    delta_hat_rotone = np.arctan2(y_new-y,x_new-x)-theta_int
     delta_hat_rottwo = theta_new-theta-delta_hat_rotone
 
     prob_one = prob(delta_trans-delta_hat_trans, a_3*delta_hat_trans*delta_hat_trans+a_4*delta_hat_rotone*delta_hat_rotone+a_4*delta_hat_rottwo*delta_hat_rottwo)
@@ -120,14 +120,18 @@ def sample_motion_model_odom(previous_pose,control,sample):
     a_4 = 1
 
     x, y, theta = previous_pose
-    delta_rotone, delta_rottwo, delta_trans = control
+    x_int_new, y_int_new, theta_int_new, x_int, y_int, theta_int =  control
+
+    delta_trans = sqrt((x_int_new-x_int)*(x_int_new-x_int)+(y_int_new-y_int)*(y_int_new-y_int))
+    delta_rotone = np.arctan2(y_int_new-y_int,x_int_new-x_int)-theta_int_new
+    delta_rottwo = theta_int_new-theta_int-delta_rotone
 
     delta_hat_rotone = delta_rotone - sample(a_1*delta_rotone*delta_rotone+a_2*delta_trans*delta_trans)
     delta_hat_trans = delta_trans - sample(a_3*delta_trans*delta_trans+a_4*delta_rotone*delta_rotone+a_4*delta_rottwo*delta_rottwo)
     delta_hat_rottwo = delta_rottwo - sample(a_1*delta_rottwo*delta_rottwo+a_2*delta_trans*delta_trans)
 
-    x_new = x+delta_hat_trans*cos(theta*delta_hat_rotone)
-    y_new = y+delta_hat_trans*sin(theta*delta_hat_rotone)
+    x_new = x+delta_hat_trans*cos(theta+delta_hat_rotone)
+    y_new = y+delta_hat_trans*sin(theta+delta_hat_rotone)
     theta_new = theta + delta_hat_rotone+delta_hat_rottwo
 
     return x_new, y_new, theta_new
