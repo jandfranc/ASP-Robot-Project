@@ -46,7 +46,11 @@ def prob_triangle(argument, variance):
 
 
 def sample_motion_model_velocity(previous_pose,control,time, sample):
-
+    #poses are vectors containing x, y and angular values, respectively
+    #control is a vector containing translational velocity and rotational velocity, respectively
+    #time is time taken for transition
+    #velocity model used for probabilistic motion planning
+    #sample is the probability function to use
     x, y, theta = previous_pose
     trans_vel, rot_vel = control
 
