@@ -135,3 +135,30 @@ def sample_motion_model_odom(previous_pose,control,sample):
     theta_new = theta + delta_hat_rotone+delta_hat_rottwo
 
     return x_new, y_new, theta_new
+
+def odom_motion_model(pose,previous_pose,control,prob):
+    #poses and control are vectors containing x, y and angular values, respectively
+    #time is time taken for transition
+    #prob is the probability function to use
+    a_1 = 1
+    a_2 = 1
+    a_3 = 1
+    a_4 = 1
+
+    x, y, theta = previous_pose
+    x_new, y_new, theta_new = pose
+    x_int_new, y_int_new, theta_int_new, x_int, y_int, theta_int =  control
+
+    delta_trans = sqrt((x_int_new-x_int)*(x_int_new-x_int)+(y_int_new-y_int)*(y_int_new-y_int))
+    delta_rotone = np.arctan2(y_int_new-y_int,x_int_new-x_int)-theta_int_new
+    delta_rottwo = theta_int_new-theta_int-delta_rotone
+
+    delta_hat_trans = sqrt((x-x_new)*(x-x_new)+(y-y_new)*(y-y_new))
+    delta_hat_rotone = np.arctan2(y_new-y,x_new-x)-theta_int
+    delta_hat_rottwo = theta_new-theta-delta_hat_rotone
+
+    prob_one = prob(delta_trans-delta_hat_trans, a_3*delta_hat_trans*delta_hat_trans+a_4*delta_hat_rotone*delta_hat_rotone+a_4*delta_hat_rottwo*delta_hat_rottwo)
+    prob_two = prob(delta_rotone-delta_hat_rotone, a_1*delta_hat_rotone*delta_hat_rotone+a_2*delta_hat_trans*delta_hat_trans)
+    prob_three = prob(delta_rottwo-delta_hat_rottwo, a_1*delta_hat_rottwo*delta_hat_rottwo+a_2*delta_hat_trans*delta_hat_trans)
+
+    return prob_one*prob_two*prob_three
