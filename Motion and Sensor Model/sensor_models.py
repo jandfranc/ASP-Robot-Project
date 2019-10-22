@@ -26,7 +26,7 @@ def scan_model(measurements, pose, map):
                         if curr_dist < dist:
                             dist = curr_dist
             returned_value = returned_value*(z_hit*gaussian_prob(dist,std_hit)+(z_random/z_max))
-            print(returned_value)
+            
         theta_sens += theta_angle
     return returned_value
 
