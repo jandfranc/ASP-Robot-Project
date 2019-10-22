@@ -84,7 +84,7 @@ def sample_triangle(variance):
     return (sqrt(6)/2) * (random.uniform(-sqrt_variance, sqrt_variance) + random.uniform(-sqrt_variance, sqrt_variance))
 
 
-def odom_motion_model(pose,previous_pose,control,prob):
+def odom_motion_model(pose,previous_pose,control,previous_int_pose,prob):
     #poses and control are vectors containing x, y and angular values, respectively
     #time is time taken for transition
     #prob is the probability function to use
@@ -95,7 +95,8 @@ def odom_motion_model(pose,previous_pose,control,prob):
 
     x, y, theta = previous_pose
     x_new, y_new, theta_new = pose
-    x_int_new, y_int_new, theta_int_new, x_int, y_int, theta_int =  control
+    x_int_new, y_int_new, theta_int_new = control
+    x_int, y_int, theta_int = previous_int_pose
 
     delta_trans = sqrt((x_int_new-x_int)*(x_int_new-x_int)+(y_int_new-y_int)*(y_int_new-y_int))
     delta_rotone = np.arctan2(y_int_new-y_int,x_int_new-x_int)-theta_int_new

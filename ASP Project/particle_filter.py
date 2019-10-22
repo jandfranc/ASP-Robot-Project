@@ -4,7 +4,7 @@ import random
 import numpy as np
 from math import pi
 
-def particle_filter(previous_particles, control, measurements, map):
+def particle_filter(previous_particles, control,previous_int_pose, measurements, map):
     potential_particles = []
     particles_weights = []
     returned_particles = []
@@ -12,7 +12,7 @@ def particle_filter(previous_particles, control, measurements, map):
     #control must include previous internal coordinate?
 
     for i_particle in range(0,len(previous_particles)):
-        particle = mm.sample_motion_model_odom(previous_particles[i_particle],control, mm.sample_norm)
+        particle = mm.sample_motion_model_odom(previous_particles[i_particle],control,previous_int_pose,mm.sample_norm)
         weight = sm.scan_model(measurements, particle, map)
         potential_particles.append(particle)
         particles_weights.append(weight)
@@ -22,3 +22,12 @@ def particle_filter(previous_particles, control, measurements, map):
     for i in range(0,len(returned_particles_idx)):
         returned_particles.append(potential_particles[returned_particles_idx[1]])
     return returned_particles
+
+def init_particles(map):
+    particle_list = []
+    while i < 1001:
+        particle = [random.randint(0,np.shape(map)[0]),random.randint(0,np.shape(map)[1]),random.randint(0,360)]
+        if map[particle[0]][particle[1]] == 0:
+            particle_list.append(particle)
+            i += 1
+    return particle_list
