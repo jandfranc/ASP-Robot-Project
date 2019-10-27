@@ -1,4 +1,4 @@
-#const n = 8.
+#const n = 3.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 sorts
@@ -157,3 +157,6 @@ holds(adjacent(x24, x23),0).
 
 holds(at(r,x1),0).
 goal(I) :- holds(at(r,x8),I).
+
+display
+occurs.

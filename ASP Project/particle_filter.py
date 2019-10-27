@@ -19,14 +19,14 @@ def particle_filter(previous_particles, control,previous_int_pose, measurements,
 
     norm_weights = np.divide(particles_weights, np.sum(particles_weights))
     returned_particles_idx = np.random.choice(range(0,len(potential_particles)),len(potential_particles),True,norm_weights)
-    for i in range(0,len(returned_particles_idx)):
-        returned_particles.append(potential_particles[returned_particles_idx[1]])
+    for i_particle_idx in range(0,len(returned_particles_idx)):
+        returned_particles.append(potential_particles[returned_particles_idx[i]])
     return returned_particles
 
 def init_particles(map):
     particle_list = []
     while i < 1001:
-        particle = [random.randint(0,np.shape(map)[0]),random.randint(0,np.shape(map)[1]),random.randint(0,360)]
+        particle = [random.randint(0,np.shape(map)[0]),random.randint(0,np.shape(map)[1]),np.radians(random.randint(0,360))]
         if map[particle[0]][particle[1]] == 0:
             particle_list.append(particle)
             i += 1

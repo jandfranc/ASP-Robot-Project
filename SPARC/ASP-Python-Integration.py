@@ -1,8 +1,8 @@
 import subprocess
 
-def solveAnswerSets(file):
+def solveAnswerSets(file, no_of_answer_sets = 9999999999999):
 #Takes ASP file as input and returns its answer set
-    cmd = 'java -jar sparc.jar {} -A -n 1'.format(file)
+    cmd = 'java -jar sparc.jar {} -A -n {}'.format(file, no_of_answer_sets)
     answer_set = subprocess.check_output(cmd)
     answer_set = answer_set.decode('utf-8')
     return answer_set
@@ -17,6 +17,7 @@ def splitAnswerSets(set_to_split):
     return split_string
 
 def removeNotRelevant(answerset):
+    #NoT NECCESSARY
 #removes all values not part of the plan - must be a list of answer sets inputted
     for i_sets in range(0,len(answerset)):
         answerset[i_sets] = [x for x in answerset[i_sets] if x[0] != '-']
@@ -27,8 +28,7 @@ def getAnswerSet(file):
 #performs all steps in getting instructions
     returned_val = solveAnswerSets(file)
     returned_val = splitAnswerSets(returned_val)
-    returned_val = removeNotRelevant(returned_val)
-    return returned_val
+    return answer_set_list
 
 if __name__ == "__main__":
     #get_answer_set("s_ancestors.sp")
