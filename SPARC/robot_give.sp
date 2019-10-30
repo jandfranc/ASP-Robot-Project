@@ -1,4 +1,4 @@
-#const n = 11.
+#const n = 6.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 sorts
@@ -143,11 +143,11 @@ holds(has(p5, o5),0).
 %%%%%%%%%%%%%%%%%%
 %%Goal
 %%%%%%%%%%%%%%%%%%
-goal(I) :- holds(has(p1,o5),I),
-           holds(has(p2,o1),I),
-           holds(has(p3,o4),I),
-           holds(has(p4,o3),I),
-           holds(has(p6,o2),I).
+goal(I) :- holds(has(p1,o1),I),
+           holds(has(p2,o5),I),
+           holds(has(p3,o3),I),
+           holds(has(p4,o2),I),
+           holds(has(p6,o4),I).
 goal(I+1) :- goal(I).
 
 %%%%%%%%%%%%%%%%%%
