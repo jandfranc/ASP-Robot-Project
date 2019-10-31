@@ -1,6 +1,6 @@
 import subprocess
 
-def solve_answre_sets(file, no_of_answer_sets = 9999999999999):
+def solve_answer_sets(file, no_of_answer_sets = 9999):
 #Takes ASP file as input and returns its answer set
     cmd = 'java -jar sparc.jar {} -A -n {}'.format(file, no_of_answer_sets)
     answer_set = subprocess.check_output(cmd)
@@ -48,7 +48,6 @@ def read_file_sp_to_list(file):
                 if it_letter != ' ':
                     fixed_list.append(it_line)
                     break
-
     return fixed_list
 
 
@@ -82,15 +81,39 @@ def add_rules(rules_list,item_to_add):
 def edit_sorts(sorts_list, sort_to_edit, new_val):
     for iter in range(0,len(sorts_list)):
         if (sort_to_edit + ' =') in sorts_list[iter]:
-            sorts_list[iter] = sort_to_edit + ' = [' + sort_to_edit[1] + '][0..' + str(new_val) + ']'
+            sorts_list[iter] = sort_to_edit + ' = [' + sort_to_edit[1] + '][0..' + str(new_val) + '].'
             print(sorts_list[iter])
             return sorts_list
 
+def edit_constant(constants_list, new_val):
+    constants_list = ['#const n='+str(new_val) + '.']
+    return constants_list
 
+def add_sections_together(*args):
+    returned_list = []
+    for it in args:
+        returned_list += it
+    return returned_list
+
+def find_minimal_answersets(file,written_file, init_const = 0):
+#goes from 0 or specified number up until an answer set is returned, first checks if an answer set is possible.
+#IF NO ANSWER SET EXISTS WILL NEVER END
+    ASP_list = read_file_sp_to_list(file)
+    constants_list, sorts_list, predicates_list, rules_list, display_list = split_asp_sections(ASP_list)
+    answer_set = ''
+    constant_to_add = init_const
+    while len(answer_set) < 3:
+        constant_to_add += 1
+        constants_list = edit_constant(constants_list, constant_to_add)
+        combined_ASP_sections = add_sections_together(constants_list, sorts_list, predicates_list, rules_list, display_list)
+        write_list_to_file(written_file,combined_ASP_sections)
+        answer_set = solve_answer_sets(written_file)
+    return answer_set
 
 if __name__ == "__main__":
     #get_answer_set("s_ancestors.sp")
     #a = splitAnswerSets(getAnswerSets("s_bwplan.sp"))
     #a = removeNotTrue(a)
     a = read_file_sp_to_list('robot_give.sp')
-    
+    e = find_minimal_answersets('robot_give.sp','test.sp')
+    print(e)
