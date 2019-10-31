@@ -33,7 +33,6 @@ def get_answer_set(file):
 def read_file_sp_to_list(file):
 #converts file to a list with no empty lines or comments, for better adding of logic later
     read_file = None
-    write_file = None
     try:
         read_file = open(file,'r')
         file_as_list = read_file.read().splitlines()
@@ -55,6 +54,7 @@ def read_file_sp_to_list(file):
 
 def write_list_to_file(file,list):
 #does what it says on the tin
+    write_file = None
     try:
         write_file = open(file,'w')
         for it_line in list:
@@ -76,9 +76,21 @@ def split_asp_sections(input_list):
     display_list = input_list[display_idx::]
     return constants_list, sorts_list, predicates_list, rules_list, display_list
 
+def add_rules(rules_list,item_to_add):
+    rules_list += item_to_add
+
+def edit_sorts(sorts_list, sort_to_edit, new_val):
+    for iter in range(0,len(sorts_list)):
+        if (sort_to_edit + ' =') in sorts_list[iter]:
+            sorts_list[iter] = sort_to_edit + ' = [' + sort_to_edit[1] + '][0..' + str(new_val) + ']'
+            print(sorts_list[iter])
+            return sorts_list
+
+
+
 if __name__ == "__main__":
     #get_answer_set("s_ancestors.sp")
     #a = splitAnswerSets(getAnswerSets("s_bwplan.sp"))
     #a = removeNotTrue(a)
     a = read_file_sp_to_list('robot_give.sp')
-    split_asp_sections(a)
+    
