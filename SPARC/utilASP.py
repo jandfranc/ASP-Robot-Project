@@ -16,20 +16,6 @@ def split_answer_sets(set_to_split):
     split_string = [x.split(', ') for x in split_string]
     return split_string
 
-def remove_not_relevant(answerset):
-    #NoT NECCESSARY
-#removes all values not part of the plan - must be a list of answer sets inputted
-    for i_sets in range(0,len(answerset)):
-        answerset[i_sets] = [x for x in answerset[i_sets] if x[0] != '-']
-        answerset[i_sets] = [x for x in answerset[i_sets] if x[0:6] == 'occurs']
-    return answerset
-
-def get_answer_set(file):
-#performs all steps in getting instructions
-    returned_val = solve_answer_sets(file)
-    returned_val = split_answer_sets(returned_val)
-    return answer_set_list
-
 def read_file_sp_to_list(file):
 #converts file to a list with no empty lines or comments, for better adding of logic later
     read_file = None
@@ -108,12 +94,22 @@ def find_minimal_answersets(file,written_file, init_const = 0):
         combined_ASP_sections = add_sections_together(constants_list, sorts_list, predicates_list, rules_list, display_list)
         write_list_to_file(written_file,combined_ASP_sections)
         answer_set = solve_answer_sets(written_file)
-    return answer_set
+    answer_set = split_answer_sets(answer_set)
+    len_answer_sets = 9999
+    returned_sets = []
+    for it_set in answer_set:
+        if len_answer_sets == len(it_set):
+            returned_sets.append(it_set)
+        elif len_answer_sets > len(it_set):
+            len_answer_sets = len(it_set)
+            returned_sets = [it_set]
+
+    return returned_sets
 
 if __name__ == "__main__":
     #get_answer_set("s_ancestors.sp")
     #a = splitAnswerSets(getAnswerSets("s_bwplan.sp"))
     #a = removeNotTrue(a)
     a = read_file_sp_to_list('robot_give.sp')
-    e = find_minimal_answersets('robot_give.sp','test.sp')
+    e = find_minimal_answersets('test.sp','test2.sp')
     print(e)
