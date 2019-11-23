@@ -4,7 +4,7 @@ import utilASP as ua
 import matplotlib.pyplot as plt
 import numpy as np
 
-map_arr = rm.map_read('maps/room.png')
+map_arr = rm.map_read('maps/annas_map.png')
 
 room_list, doors = rm.find_rooms_and_doors(map_arr)
 
@@ -21,10 +21,10 @@ constants_list, sorts_list, predicates_list, rules_list, display_list = ua.split
 rules_list = ua.add_rules(rules_list,asp_rooms)
 
 start_room = 0
-start_point = [5,5]
-goal_point = [35,10]
-init_goal = 2
-rules_list = ua.add_rules(rules_list,[f'holds(at(r,x{start_room}),0).','goal(I) :- holds(at(r,x2),I).'])
+start_point = [15,15]
+goal_point = [84,87]
+init_goal = 6
+rules_list = ua.add_rules(rules_list,[f'holds(at(r,x{start_room}),0).',f'goal(I) :- holds(at(r,x{init_goal}),I).'])
 
 if start_room != init_goal:
     new_asp_doc = ua.add_sections_together(constants_list, sorts_list, predicates_list, rules_list, display_list)
@@ -56,7 +56,7 @@ for it in range(0,len(asp_route)):
     elif len(asp_route)==1:
         goal_point_loc = room[route[it]].start_point_calc(goal_point)
         plan_same = md.markov_reward(rooms[asp_route[it]].roombox,rooms[asp_route[it]].reward_dict,1, goal_point_loc, previous_values = 'empty',extra_val = -1000)
-        for plan_iter in range(0,100):
+        for plan_iter in range(0,10):
             plan_same = md.markov_reward(rooms[asp_route[it]].roombox,rooms[asp_route[it]].reward_dict,1, goal_point_loc, previous_values = plan_same,extra_val = -1000)
         loc_route = md.choose_route_look_ahead(rooms[asp_route[it]].roombox,plan_same,start_point,[goal_point])
         global_route = []
@@ -77,7 +77,7 @@ for it in range(0,len(asp_route)):
 
         goal_point_loc = rooms[asp_route[it]].start_point_calc(goal_point)
         plan_same = md.markov_reward(rooms[asp_route[it]].roombox,rooms[asp_route[it]].reward_dict,1, goal_point_loc, previous_values = 'empty',extra_val = -1000)
-        for plan_iter in range(0,100):
+        for plan_iter in range(0,10):
             plan_same = md.markov_reward(rooms[asp_route[it]].roombox,rooms[asp_route[it]].reward_dict,1, goal_point_loc, previous_values = plan_same,extra_val = -1000)
         loc_route = md.choose_route_look_ahead(rooms[asp_route[it]].roombox,plan_same,next_start,[goal_point_loc])
         global_route = []
@@ -126,18 +126,14 @@ for it in range(0,len(asp_route)):
         route = route + global_route
 
 
-print(curr_plan[0][11][11])
-print(curr_plan[0][next_goal[0]][next_goal[1]])
-print(next_goal)
-
 map_arr_r = np.copy(map_arr)
 i = 5
 for pos in route[1::]:
-    map_arr_r[pos[0],pos[1]] = 3
+    map_arr_r[pos[0],pos[1]] = i
     i += 1
 map_arr_r[start_point[0],start_point[1]] = 5
 map_arr_r[goal_point[0],goal_point[1]] = 5
-map_arr_r[curr_plan[1][0][0],curr_plan[1][0][1]] = 5
+
 plt.figure()
 plt.imshow(rooms[0].markov_plans[0][0])
 plt.imshow(map_arr_r)

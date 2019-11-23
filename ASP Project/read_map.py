@@ -99,7 +99,7 @@ class Room():
         self.room_num = room_num
         self.room_list = room_list
         self.goal = None
-        self.reward_dict = {'hit_wall':-10,'movement':0,'reached_goal':1000}
+        self.reward_dict = {'hit_wall':-100,'movement':-1,'reached_goal':1000}
         self.room_map()
         self.find_connections()
         self.find_goals()
@@ -145,7 +145,7 @@ class Room():
         for loc_door in self.local_doors:
             goal_x = loc_door[0][0] + int((loc_door[1][0]-loc_door[0][0])/2)
             goal_y = loc_door[0][1] + int((loc_door[1][1]-loc_door[0][1])/2)
-            
+
             if goal_x == self.roombox.shape[0]-1:
                 goal_x += -1
             elif goal_x == 0:

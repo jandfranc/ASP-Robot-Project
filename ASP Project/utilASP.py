@@ -106,11 +106,3 @@ def find_minimal_answersets(file,written_file, init_const = 0):
             returned_sets = [it_set]
 
     return returned_sets
-
-if __name__ == "__main__":
-    #get_answer_set("s_ancestors.sp")
-    #a = splitAnswerSets(getAnswerSets("s_bwplan.sp"))
-    #a = removeNotTrue(a)
-    a = read_file_sp_to_list('robot_give.sp')
-    e = find_minimal_answersets('test.sp','test2.sp')
-    print(e)
