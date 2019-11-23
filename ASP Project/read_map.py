@@ -99,7 +99,7 @@ class Room():
         self.room_num = room_num
         self.room_list = room_list
         self.goal = None
-        self.reward_dict = {'hit_wall':-1,'movement':-1,'reached_goal':100}
+        self.reward_dict = {'hit_wall':-10,'movement':0,'reached_goal':1000}
         self.room_map()
         self.find_connections()
         self.find_goals()
@@ -133,17 +133,29 @@ class Room():
         self.local_doors = []
         for door in self.global_doors:
             if door[2] == self.room:
-                loc_door_x1 = door[0][0]-door[2][0][0]
-                loc_door_x2 = door[1][0]-door[2][0][0]
-                loc_door_y1 = door[0][1]-door[2][0][1]
-                loc_door_y2 = door[1][1]-door[2][0][1]
+                loc_door_x1 = door[0][0]-door[2][0][0]+1
+                loc_door_x2 = door[1][0]-door[2][0][0]+1
+                loc_door_y1 = door[0][1]-door[2][0][1]+1
+                loc_door_y2 = door[1][1]-door[2][0][1]+1
+
                 self.local_doors.append([[loc_door_x1,loc_door_y1],[loc_door_x2,loc_door_y2], door])
 
         self.goals = []
+
         for loc_door in self.local_doors:
             goal_x = loc_door[0][0] + int((loc_door[1][0]-loc_door[0][0])/2)
             goal_y = loc_door[0][1] + int((loc_door[1][1]-loc_door[0][1])/2)
+            
+            if goal_x == self.roombox.shape[0]-1:
+                goal_x += -1
+            elif goal_x == 0:
+                goal_x += 1
+            if goal_y == self.roombox.shape[1]-1:
+                goal_y += -1
+            elif goal_y == 0:
+                goal_y += 1
             self.goals.append([[goal_x,goal_y],loc_door[0:2]])
+
 
     def ASP_connections(self):
         self.ASP_connect = []
@@ -153,20 +165,24 @@ class Room():
 
     def make_init_plans(self):
         self.markov_plans = []
+
         for goal in self.goals:
-            it_markov_reward = md.markov_reward(self.roombox,self.reward_dict,1,goal)
+
+            it_markov_reward = md.markov_reward(self.roombox,self.reward_dict,1,goal[0])
+
             for i in range(0,10):
-                it_markov_reward = md.markov_reward(self.roombox,self.reward_dict,1,goal, it_markov_reward)
-        self.markov_plans.append([it_markov_reward, goal])
+                it_markov_reward = md.markov_reward(self.roombox,self.reward_dict,1,goal[0], it_markov_reward)
+            self.markov_plans.append([it_markov_reward, goal])
+
 
     def start_point_calc(self,start_point):
-        start_x = start_point[0] - self.room[0][0]
-        start_y = start_point[1] - self.room[0][1]
+        start_x = start_point[0] - self.room[0][0]+1
+        start_y = start_point[1] - self.room[0][1]+1
         return [start_x,start_y]
 
     def convert_route_global(self,point):
-        start_x = point[0] + self.room[0][0]
-        start_y = point[1] + self.room[0][1]
+        start_x = point[0] + self.room[0][0]-1
+        start_y = point[1] + self.room[0][1]-1
         return [start_x,start_y]
 
 def create_asp(room_obj_list):

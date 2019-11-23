@@ -39,18 +39,10 @@ something_happened(I) :- occurs(A,I).
 :- goal(I), goal(I-1),
    J < I,
    not something_happened(J).
-holds(adjacent(x0, x3),0).
-holds(adjacent(x1, x3),0).
-holds(adjacent(x2, x3),0).
-holds(adjacent(x3, x0),0).
-holds(adjacent(x3, x1),0).
-holds(adjacent(x3, x2),0).
-holds(adjacent(x3, x4),0).
-holds(adjacent(x3, x5),0).
-holds(adjacent(x3, x6),0).
-holds(adjacent(x4, x3),0).
-holds(adjacent(x5, x3),0).
-holds(adjacent(x6, x3),0).
+holds(adjacent(x0, x1),0).
+holds(adjacent(x1, x0),0).
+holds(adjacent(x1, x2),0).
+holds(adjacent(x2, x1),0).
 holds(at(r,x0),0).
 goal(I) :- holds(at(r,x2),I).
 display

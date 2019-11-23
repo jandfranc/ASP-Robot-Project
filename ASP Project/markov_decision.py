@@ -149,7 +149,7 @@ def choose_route_look_ahead(map_arr,plan,start_spot,terminal_states):
 
 
         if route[-1] in terminal_states:
-            
+
             at_terminal = True
 
 
