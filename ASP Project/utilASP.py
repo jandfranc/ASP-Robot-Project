@@ -63,6 +63,7 @@ def split_asp_sections(input_list):
 
 def add_rules(rules_list,item_to_add):
     rules_list += item_to_add
+    return rules_list
 
 def edit_sorts(sorts_list, sort_to_edit, new_val):
     for iter in range(0,len(sorts_list)):
