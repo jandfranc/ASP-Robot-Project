@@ -133,10 +133,13 @@ def choose_route_look_ahead(map_arr,plan,start_spot,terminal_states):
         surr_len = len(surrounding)
         for i_poss in surrounding:
             weight_list.append(plan[i_poss[0]][i_poss[1]])
+            normalise = 1
             for pos_iter in [[i_poss[0]-1,i_poss[1]],[i_poss[0]+1,i_poss[1]],[i_poss[0],i_poss[1]-1],[i_poss[0],i_poss[1]+1]]:
                 if map_arr[pos_iter[0],pos_iter[1]] == 0:
 
                     weight_list[len(weight_list)-1] += plan[pos_iter[0]][pos_iter[1]]
+                    normalise += 1
+            weight_list[len(weight_list)-1] = weight_list[len(weight_list)-1]/normalise        
 
         try:
             route.append(surrounding[weight_list.index(max(weight_list))])

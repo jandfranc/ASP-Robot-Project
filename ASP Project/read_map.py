@@ -99,7 +99,7 @@ class Room():
         self.room_num = room_num
         self.room_list = room_list
         self.goal = None
-        self.reward_dict = {'hit_wall':-100,'movement':-1,'reached_goal':1000}
+        self.reward_dict = {'hit_wall':-100,'movement':-1,'reached_goal':100000}
         self.room_map()
         self.find_connections()
         self.find_goals()
@@ -168,9 +168,9 @@ class Room():
 
         for goal in self.goals:
 
-            it_markov_reward = md.markov_reward(self.roombox,self.reward_dict,1,goal[0])
+            it_markov_reward = md.markov_reward(self.roombox,self.reward_dict,0.7,goal[0])
 
-            for i in range(0,10):
+            for i in range(0,5):
                 it_markov_reward = md.markov_reward(self.roombox,self.reward_dict,1,goal[0], it_markov_reward)
             self.markov_plans.append([it_markov_reward, goal])
 

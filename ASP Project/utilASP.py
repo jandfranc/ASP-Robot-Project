@@ -82,7 +82,7 @@ def add_sections_together(*args):
         returned_list += it
     return returned_list
 
-def find_minimal_answersets(file,written_file, init_const = 0):
+def find_minimal_answersets(file,written_file, max_const, init_const = 0):
 #goes from 0 or specified number up until an answer set is returned, first checks if an answer set is possible.
 #IF NO ANSWER SET EXISTS WILL NEVER END
     ASP_list = read_file_sp_to_list(file)
@@ -95,6 +95,8 @@ def find_minimal_answersets(file,written_file, init_const = 0):
         combined_ASP_sections = add_sections_together(constants_list, sorts_list, predicates_list, rules_list, display_list)
         write_list_to_file(written_file,combined_ASP_sections)
         answer_set = solve_answer_sets(written_file)
+        if constant_to_add > max_const:
+            return False
     answer_set = split_answer_sets(answer_set)
     len_answer_sets = 9999
     returned_sets = []
