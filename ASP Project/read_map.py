@@ -83,23 +83,26 @@ def find_rooms_and_doors(map_arr):
     return room_list, hor_doors
 
 
-def create_room_arr(room_list,hor_doors,map_arr):
+def create_room_arr(room_list,hor_doors,map_arr,reward_dict,move_prob,discount,iterations):
     rooms = []
     room_num = 0
     for room in room_list:
-        rooms.append(Room(room,room_list,hor_doors,map_arr,room_num))
+        rooms.append(Room(room,room_list,hor_doors,map_arr,room_num,reward_dict,move_prob,discount,iterations))
         room_num += 1
     return rooms
 
 class Room():
-    def __init__(self,room,room_list,doors,map_arr,room_num):
+    def __init__(self,room,room_list,doors,map_arr,room_num,reward_dict,move_prob,discount,iterations):
         self.room = room
         self.global_doors = doors
         self.map_arr = map_arr
         self.room_num = room_num
         self.room_list = room_list
         self.goal = None
-        self.reward_dict = {'hit_wall':-100,'movement':-1,'reached_goal':100000}
+        self.reward_dict = reward_dict #{'hit_wall':-10,'movement':-1,'reached_goal':100}
+        self.move_prob = move_prob
+        self.discount = discount
+        self.iterations = iterations
         self.room_map()
         self.find_connections()
         self.find_goals()
@@ -165,13 +168,13 @@ class Room():
 
     def make_init_plans(self):
         self.markov_plans = []
-
         for goal in self.goals:
-
-            it_markov_reward = md.markov_reward(self.roombox,self.reward_dict,0.7,goal[0])
-
-            for i in range(0,5):
-                it_markov_reward = md.markov_reward(self.roombox,self.reward_dict,1,goal[0], it_markov_reward)
+            iteration = 0
+            it_markov_reward = md.markov_reward(self.roombox,self.reward_dict,self.move_prob,goal[0], 'empty', -100, self.discount,iteration)
+            iteration += 1
+            for i in range(0,self.iterations-1):
+                it_markov_reward = md.markov_reward(self.roombox,self.reward_dict,self.move_prob,goal[0], it_markov_reward,-100,self.discount,iteration)
+                iteration +=1
             self.markov_plans.append([it_markov_reward, goal])
 
 
