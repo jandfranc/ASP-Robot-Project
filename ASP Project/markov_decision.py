@@ -78,11 +78,12 @@ def markov_reward(map_arr,reward_dict,move_prob, goal_position, previous_values 
     #                            ha="center", va="center", color="w")
     # text = ax.text(0, 0, iteration,
     #                ha="center", va="center", color="w")
+    #
     # plt.show()
-    cv2.imshow('frame',cv2.resize(np.float32(new_values),(600,600)))
-    cv2.namedWindow('frame',cv2.WINDOW_NORMAL)
-    cv2.resizeWindow('frame',600,600)
-    cv2.waitKey(1)
+    # cv2.imshow('frame',cv2.resize(np.float32(new_values),(600,600)))
+    # cv2.namedWindow('frame',cv2.WINDOW_NORMAL)
+    # cv2.resizeWindow('frame',600,600)
+    # cv2.waitKey(1)
 
 
     return new_values

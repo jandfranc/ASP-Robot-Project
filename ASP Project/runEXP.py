@@ -3,6 +3,7 @@ import read_map as rm
 import utilASP as ua
 import matplotlib.pyplot as plt
 import numpy as np
+import pickle
 
 def run_experiment(start_room,start_point,init_goal,goal_point,reward_dict,move_prob,discount,iterations,map,map_no_obstacle):
     map_arr = rm.map_read(map)
@@ -40,21 +41,20 @@ def run_experiment(start_room,start_point,init_goal,goal_point,reward_dict,move_
                 asp_route.append(int(item[15]))
     else:
         asp_route = start_room
-
-
     if min_route != False:
         route = []
         for it in range(0,len(asp_route)):
+
             if asp_route[it] == asp_route[0] and len(asp_route) != 1:
-                if len(rooms[asp_route[it]].goals) == 1:
-                    curr_goal = rooms[asp_route[it]].markov_plans[0][1][0]
 
-                    loc_route = md.choose_route_look_ahead(rooms[asp_route[it]].roombox,rooms[asp_route[it]].markov_plans[0][0],rooms[asp_route[it]].start_point_calc(start_point),[curr_goal])
-                    global_route = []
 
-                    for loc_point in loc_route:
-                        global_route.append(rooms[asp_route[it]].convert_route_global(loc_point))
-                    route = route + global_route
+                curr_goal = rooms[asp_route[it]].markov_plans[0][1][0]
+                loc_route = md.choose_route_look_ahead(rooms[asp_route[it]].roombox,rooms[asp_route[it]].markov_plans[0][0],rooms[asp_route[it]].start_point_calc(start_point),[curr_goal])
+                global_route = []
+
+                for loc_point in loc_route:
+                    global_route.append(rooms[asp_route[it]].convert_route_global(loc_point))
+                route = route + global_route
             elif len(asp_route)==1:
                 goal_point_loc = room[route[it]].start_point_calc(goal_point)
                 iteration = 0
@@ -125,32 +125,24 @@ def run_experiment(start_room,start_point,init_goal,goal_point,reward_dict,move_
                         curr_plan = plan
 
                 loc_route = md.choose_route_look_ahead(rooms[asp_route[it]].roombox,curr_plan[0],next_start,[next_goal])
-                print(loc_route)
-                print(next_start)
-                print(next_goal)
+                #print(loc_route)
+                #print(next_start)
+                #print(next_goal)
                 global_route = []
                 for loc_point in loc_route:
                     global_route.append(rooms[asp_route[it]].convert_route_global(loc_point))
                 route = route + global_route
     return route, map_arr, rooms
 
-if __name__ == '__main__':
-    start_room = 0
-    start_point = [10,10]
-    init_goal = 2
-    goal_point = [10,85]
-
-
-    reward_dict = {'hit_wall':-10,'reached_goal':1000}
-    move_prob = 0.6
-    discount = 0.9
-    iterations = 1000
-
-    map = 'maps/pls.png'
-    map_no_obstacle = 'maps/plsnoobs.png'
-
-    route, map_arr, rooms = run_experiment(start_room,start_point,init_goal,goal_point,reward_dict,move_prob,discount,iterations,map,map_no_obstacle)
-
+def save_map(map_arr,route):
+    global start_point
+    global goal_point
+    global reward_dict
+    global move_prob
+    global discount
+    global iterations
+    hit_wall = reward_dict['hit_wall']
+    reached_goal = reward_dict['reached_goal']
     map_arr_r = np.copy(map_arr)
     i = 5
     for pos in route[1::]:
@@ -159,9 +151,44 @@ if __name__ == '__main__':
     map_arr_r[start_point[0],start_point[1]] = 5
     map_arr_r[goal_point[0],goal_point[1]] = 5
 
+    with open(f'plans/move_prob{move_prob}_discount{discount}_iterations{iterations}_hitwall{hit_wall}_reachedgoal{reached_goal}.txt', "w") as text_file:
+        for part in route:
+            text_file.write(str(part))
+
     plt.figure()
-    plt.imshow(rooms[0].markov_plans[0][0])
+    #plt.imshow(rooms[0].markov_plans[0][0])
     plt.imshow(map_arr_r)
-    plt.show()
+    plt.savefig(f'plans/move_prob{move_prob}_discount{discount}_iterations{iterations}_hitwall{hit_wall}_reachedgoal{reached_goal}.png')
+
+if __name__ == '__main__':
+    start_room = 0
+    start_point = [18,18]
+    init_goal = 5
+    goal_point = [85,10]
+
+
+    # reward_dict = {'hit_wall':10,'reached_goal':100}
+    # move_prob = 0.9
+    # discount = 0.9
+    # iterations = 50
+
+    map = 'maps/experiment_obs.png'
+    map_no_obstacle = 'maps/experiment_no_obs.png'
+
+    hit_wall_list = [-100,-10,0]
+    reached_goal_list = [10,100,1000]
+    move_prob_list = [0.3,0.8,1]
+    discount_list = [0.5,0.9,1]
+    iterations = 50
+    for hw in hit_wall_list:
+        for rg in reached_goal_list:
+            for mp in move_prob_list:
+                for dis in discount_list:
+                    reward_dict = {'hit_wall':hw,'reached_goal':rg}
+                    move_prob = mp
+                    discount = dis
+                    route, map_arr, rooms = run_experiment(start_room,start_point,init_goal,goal_point,reward_dict,move_prob,discount,iterations,map,map_no_obstacle)
+                    save_map(map_arr,route)
+
 else:
     print('no route found')
